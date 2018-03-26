@@ -1,0 +1,38 @@
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup as bs
+
+
+new_dict = {"City": "City", "Restaurants": "Restaurants", 'Meal, Inexpensive Restaurant ': "Meal_inexpensive", "Meal for 2 People, Mid-range Restaurant, Three-course ": "Three_course_meal", "McMeal at McDonalds (or Equivalent Combo Meal) ":"McMeal", "Domestic Beer (0.5 liter draught) ": "Domestic_beer_0_5", "Imported Beer (0.33 liter bottle) ": "imported_beer",  "Cappuccino (regular) ":"cappuccino", "Coke/Pepsi (0.33 liter bottle) ": "coke_pepsi", 
+"Water (0.33 liter bottle)  ": "water", "Markets": "Markets", "Milk (regular), (1 liter) ":"Milk", "Loaf of Fresh White Bread (500g) ": "white_bread", "Rice (white), (1kg) ":"white_rice", "Eggs (regular) (12) ": "eggs", "Local Cheese (1kg) ": "local_cheese", "Chicken Breasts (Boneless, Skinless), (1kg) ": "chicken_breasts", "Beef Round (1kg) (or Equivalent Back Leg Red Meat) ":"round_beef_1_kg", 
+"Apples (1kg) ": "apples_1kg", "Banana (1kg) ": "banana_1kg", "Oranges (1kg) ": "oranges_1kg", "Tomato (1kg) ": "tomato_1kg", "Potato (1kg) ": "potato_1kg", "Onion (1kg) ": "onion_1kg", 
+"Lettuce (1 head) ": "lettuce_1_head", "Water (1.5 liter bottle) ": "water_1_5l", "Bottle of Wine (Mid-Range) ": "wine", "Domestic Beer (0.5 liter bottle) ": "domestic_beer_0_5l", "Pack of Cigarettes (Marlboro) ": "Cigarettes", "Transportation": "Transportation", "One-way Ticket (Local Transport) ": "Lt_one_way_ticket", "Monthly Pass (Regular Price) ":"monthly_pass", 
+"Taxi Start (Normal Tariff) ": "taxi_start", "Taxi 1km (Normal Tariff) ": "taxi_1km", "Taxi 1hour Waiting (Normal Tariff) ": "taxi_1hr_waiting", "Gasoline (1 liter) ": "gasoline_1ltr", 
+"Volkswagen Golf 1.4 90 KW Trendline (Or Equivalent New Car) ": "volkswagen_golf", "Toyota Corolla 1.6l 97kW Comfort (Or Equivalent New Car) ": "toyota_corolla", "Utilities (Monthly)": "Utilities", "Basic (Electricity, Heating, Cooling, Water, Garbage) for 85m2 Apartment ": "basic_utilities", "1 min. of Prepaid Mobile Tariff Local (No Discounts or Plans) ": "prepaid_mobile", "Internet (60 Mbps or More, Unlimited Data, Cable/ADSL) ": "internet", "Sports And Leisure": "Sports_Leisure", 
+"Fitness Club, Monthly Fee for 1 Adult ": "fitness_club", "Tennis Court Rent (1 Hour on Weekend) ": "tennis_court", "Cinema, International Release, 1 Seat ": "movie_1seat", "Childcare": "Childcare", "Preschool (or Kindergarten), Full Day, Private, Monthly for 1 Child ": "preschool_1child_monthly", "International Primary School, Yearly for 1 Child ": "primary_school_1year", "Clothing And Shoes": "clothing_shoes", "1 Pair of Jeans (Levis 501 Or Similar) ": "jeans", "1 Summer Dress in a Chain Store (Zara, H&M, ...) ":"summer_dress",
+"1 Pair of Nike Running Shoes (Mid-Range) ": "nike_running_shoes", "1 Pair of Men Leather Business Shoes ": "men_leather_shoes", "Rent Per Month": "rent_month", "Apartment (1 bedroom) in City Centre ": "apartment_1_bedroom_City_Center", "Apartment (1 bedroom) Outside of Centre ": "apartment_1_bedroom_outside_Center", "Apartment (3 bedrooms) in City Centre ": "apartment_3_bedroom_City_Center", "Apartment (3 bedrooms) Outside of Centre ": "apartment_3_bedroom_outside_center", "Buy Apartment Price": "buy_apt_price", 
+"Price per Square Meter to Buy Apartment in City Centre ": "pps_apt_City_Center", "Price per Square Meter to Buy Apartment Outside of Centre ": "pps_apt_outside_center", "Salaries And Financing": "Salaries_Financing", "Average Monthly Net Salary (After Tax) ": "average_monthly_net_salary", "Mortgage Interest Rate in Percentages (%), Yearly, for 20 Years Fixed-Rate " :"home_loan_20_years_rate"}
+
+	
+	url =  requests.get ("https://www.numbeo.com/cost-of-living/in/Istanbul").content //get the link
+	soup = bs(url, "lxml")
+	city_table = soup.find ("table", class_="data_wide_table")
+	city_dict = {}
+	city_dict["City"] = soup.h1.text.replace ("Cost of Living in ","").lstrip() //find city name
+
+	for tr in city_table.findAll ("tr"):  // finds related city parameters
+		for th,tt in zip(tr.findAll("th", class_="highlighted_th prices"), tr.findAll("th", class_="th_no_highlight_a_right prices")):
+			city_dict[new_dict[th.text]] = tt.text.lstrip()
+
+		for td, i in zip((tr.findAll("td")), tr.findAll("td", class_="priceValue ")):
+			city_dict[new_dict[td.text]] = i.text.replace("\xa0","").lstrip()
+
+		for t, o, in zip (tr.findAll("td", class_ = "tr_highlighted"), tr.findAll("td", class_="priceValue tr_highlighted")):
+			city_dict[new_dict[t.text]] = o.text.replace("\xa0","").lstrip()
+
+	print (city_dict)) 
+
+
+
+
+
